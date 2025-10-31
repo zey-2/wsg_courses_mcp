@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  wsg-courses-mcp:
+    build: .
+    container_name: wsg-courses-mcp-server
+    ports:
+      - "8080:8080"
+    environment:
+      - BASE_URL=https://api.ssg-wsg.sg
+      - CERT_PATH=/app/certificates/cert.pem
+      - KEY_PATH=/app/certificates/key.pem
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - PORT=8080
+    volumes:
+      - ./certificates:/app/certificates:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
